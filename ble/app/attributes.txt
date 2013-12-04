@@ -1,0 +1,4 @@
+xgatt_tx 10
+xgatt_rx 16
+xgatt_rx_buf_count 20
+xgatt_rx_buf_clear 23

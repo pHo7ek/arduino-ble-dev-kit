@@ -1,0 +1,103 @@
+#dim tmp(10)
+#dim ccnum(150)
+dim ls
+dim rs
+
+dim buf1(16)
+dim buf2(4)
+dim clean(16)
+dim count
+dim buffer_pointer
+
+event system_boot(major,minor,patch,build,ll_version,protocol,hw)
+
+    call gap_set_mode(gap_general_discoverable,gap_undirected_connectable)
+    call sm_set_bondable_mode(1)
+    call hardware_set_txpower(4)
+    
+
+    #ls=0
+    #rs=1
+
+    call hardware_io_port_config_direction(0, 1)
+ #   call hardware_io_port_config_direction(1, 1)
+    call hardware_io_port_write(0, $30, 0)
+   # call hardware_io_port_write(rs, 1, 0)    
+    
+    
+        #set the received counter to 0
+    count=0
+
+    count=0
+    clean(0:15) = $0000000000000000
+    buf2(0:3) = $111
+    #call system_endpoint_tx(system_endpoint_uart1, 4, buf2(0:4))
+    
+   # call hardware_set_soft_timer(32768, 0, 0)
+end
+
+
+event attributes_value(connection, reason, handle, offset, value_len, value_data)
+  # Characteristic TX has been written
+  #if handle=34 then 
+    call system_endpoint_tx(system_endpoint_uart1, value_len, value_data(0:value_len))
+  #end if
+  
+end
+
+
+#event attributes_value(connection ,reason ,handle ,offset ,value_len, value)
+   
+    #Alert the arduino
+#    call hardware_io_port_write(ls, 1, 1)
+#    call hardware_io_port_write(rs, 1, 1)
+    
+
+#    call hardware_set_soft_timer(98304, 0, 0)   
+#end
+
+
+
+    #Timer event listener
+event hardware_soft_timer(handle)
+
+#    call hardware_io_port_write(ls, 1, 0)
+#    call hardware_io_port_write(rs, 1, 0)
+    buf2(0:4) = $111
+    #call system_endpoint_tx(system_endpoint_uart1, 4, buf2(0:4))
+
+    
+end
+
+
+event connection_disconnected(handle,result)
+
+    call hardware_io_port_config_direction(0, 1)
+    call hardware_io_port_write(0, $30, 0)
+
+    call gap_set_mode(gap_general_discoverable,gap_undirected_connectable)
+end
+
+
+
+event system_endpoint_rx(endpoint, data_len, data_data) 
+  
+  if endpoint=system_endpoint_uart1
+    
+    memcpy(buf1(buffer_pointer),data_data(0),data_len)
+    buffer_pointer = buffer_pointer + data_len
+	count = count + data_len
+    #call attributes_write(xgatt_rx_buf_count, 0, 1, count)
+  
+    #if count=$10
+      call attributes_write(xgatt_rx, 0, 1, buf1(0:1))
+      #call attributes_write(xgatt_rx, 0, 16, buf1(0:16))
+      #memcpy(buf1(buffer_pointer), 0, 16)
+      
+	  buffer_pointer = 0
+	  count = 0
+	  #call attributes_write(xgatt_rx_buf_count, 0, 1, 0)
+    #end if
+  end if
+  
+end

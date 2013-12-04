@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+    <service uuid="1800">
+      <description>Generic Access Profile</description>
+
+      <characteristic uuid="2a00">
+        <properties read="true" const="true" />
+        <value>Coin</value>
+      </characteristic>
+
+      <characteristic uuid="2a01">
+        <properties read="true" const="true" />
+        <value>0</value>
+      </characteristic>
+    </service>
+    
+     <service uuid="3870cd80-fc9c-11e1-a21f-0800200c9a66" advertise="true" >
+        <description>Service</description>
+        <characteristic uuid="2a06">
+            <properties read="true" write_no_response="true" />
+            <value type="hex" variable_length="true">11223344556677889900</value>
+
+        </characteristic>
+        
+        
+        
+        
+        <characteristic uuid="E788D73B-E793-4D9E-A608-2F2BAFC59A00" id="xgatt_tx">
+	    <properties read="true" write="true"/>
+            <value length="25" value="hex" variable_length="true"></value>
+	    <description>TX</description>
+        </characteristic>
+        
+        	   <characteristic uuid="38117F3C-28AB-4718-AB95-172B363F2AE0">
+	            <properties read="true" const="true"/>
+	            <value type="hex">000780524F78</value>
+				<description>BD-Addr</description>
+        </characteristic>
+        		<characteristic uuid="4585C102-7784-40B4-88E1-3CB5C4FD37A3" id="xgatt_rx">
+	            <properties read="true" notify="true"/>
+				<value length="16" value="hex" variable_length="false"></value>
+				<description>RX</description>
+	        </characteristic>
+	
+			<characteristic uuid="11846C20-6630-11E1-B86C-0800200C9A66" id="xgatt_rx_buf_count">
+	            <properties read="true"/>
+				<value length="1" value="hex" variable_length="false"></value>
+				<description>RX Buffer Count</description>
+	        </characteristic>
+			
+			<characteristic uuid="DAF75440-6EBA-11E1-B0C4-0800200C9A66" id="xgatt_rx_buf_clear">
+	            <properties write="true" read="true" />
+				<value length="1" value="hex" variable_length="false"></value>
+				<description>RX Buffer Clear</description>
+        </characteristic> 
+    </service>
+</configuration>
